@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package ru.eaglorn.cs;
+
+message Wrapper {
+  oneof payload {
+    ChatMessage chatMessage = 1;
+  }
+}
+
+message ChatMessage {
+  string name = 1;
+  string message = 2;
+}
