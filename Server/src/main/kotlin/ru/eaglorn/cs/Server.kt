@@ -3,7 +3,11 @@ package ru.eaglorn.cs
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.aSocket
 import io.ktor.network.sockets.openReadChannel
+import io.ktor.network.sockets.openWriteChannel
 import io.ktor.utils.io.readAvailable
+import io.ktor.utils.io.readFully
+import io.ktor.utils.io.readInt
+import io.ktor.utils.io.writeFully
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -13,6 +17,19 @@ import org.springframework.context.ApplicationContext
 
 @SpringBootApplication(scanBasePackages = ["ru.eaglorn.cs"])
 open class Server {
+    fun processMessage(data: ByteArray) {
+        val wrapper = Message.Wrapper.parseFrom(data)
+
+        when (val payload = wrapper.payloadCase) {
+            Message.Wrapper.PayloadCase.CHATMESSAGE -> handleUser(wrapper.chatMessage)
+            else -> throw IllegalStateException("Unknown type: $payload")
+        }
+    }
+
+    fun handleUser (wrapper: Message.ChatMessage) {
+        println("Received: ${wrapper.name}: ${wrapper.message}")
+    }
+
     init {
         runBlocking {
             val selectorManager = SelectorManager(Dispatchers.IO)
@@ -21,13 +38,29 @@ open class Server {
                 val socket = serverSocket.accept()
                 launch {
                     val receiveChannel = socket.openReadChannel()
-                    val buffer = ByteArray(1024)
-                    val bytesRead = receiveChannel.readAvailable(buffer)
-                    if (bytesRead > 0) {
-                        val message = String(buffer, 0, bytesRead)
-                        println("Client: $message")
+                    val sendChannel = socket.openWriteChannel(autoFlush = true)
+
+                    val welcomeMessage = Message.ChatMessage.newBuilder()
+                        .setName("Server")
+                        .setMessage("Please enter your name")
+                        .build()
+
+                    sendChannel.writeFully(ZstdHelper.compress(welcomeMessage.toByteArray()))
+
+                    try {
+                        while (true) {
+                            val size = receiveChannel.readInt()
+                            val compressedData = ByteArray(size)
+                            receiveChannel.readFully(compressedData)
+
+                            val decompressedData = ZstdHelper.decompress(compressedData)
+
+                            processMessage(decompressedData)
+                        }
+                    } catch (e: Throwable) {
+                        println(e.message)
+                        socket.close()
                     }
-                    socket.close()
                 }
             }
         }
