@@ -7,7 +7,7 @@ plugins {
 }
 
 application {
-    mainClass.set("ru.eaglorn.cs.ServerApplicationKt")
+    mainClass.set("ru.eaglorn.cs.ServerKt")
     applicationName = "CustomStoryServer"
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
