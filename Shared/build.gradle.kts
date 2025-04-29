@@ -3,6 +3,9 @@ plugins {
     id("com.google.protobuf") version "0.9.5"
 }
 
+group = "ru.eaglorn.cs"
+version = "0.0.1"
+
 val kotlinVersion = "2.1.20"
 val kotlinxCoroutinesVersion = "1.10.2"
 val ktorVersion = "3.1.2"

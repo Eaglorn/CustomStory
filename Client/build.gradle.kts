@@ -6,6 +6,9 @@ plugins {
     id("org.beryx.runtime") version "1.13.1"
 }
 
+group = "ru.eaglorn.cs"
+version = "0.0.1"
+
 application {
     mainClass = "ru.eaglorn.cs.ClientKt"
     applicationName = "CustomStoryClient"
@@ -17,7 +20,6 @@ repositories {
 
 dependencies {
     implementation(project(":Shared"))
-
 }
 
 javafx {
@@ -32,7 +34,8 @@ runtime {
     options.add("--no-header-files")
     options.add("--no-man-pages")
     targetPlatform("win") {
-        jdkHome = jdkDownload("https://github.com/AdoptOpenJDK/semeru23-binaries/releases/download/jdk-23.0.1%2B11_openj9-0.48.0/ibm-semeru-open-jdk_x64_windows_23.0.1_11_openj9-0.48.0.zip")
+        jdkHome =
+            jdkDownload("https://github.com/AdoptOpenJDK/semeru23-binaries/releases/download/jdk-23.0.1%2B11_openj9-0.48.0/ibm-semeru-open-jdk_x64_windows_23.0.1_11_openj9-0.48.0.zip")
     }
     launcher {
         noConsole = true

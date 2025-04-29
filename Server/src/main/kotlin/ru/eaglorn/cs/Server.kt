@@ -1,13 +1,8 @@
 package ru.eaglorn.cs
 
-import io.ktor.network.selector.SelectorManager
-import io.ktor.network.sockets.aSocket
-import io.ktor.network.sockets.openReadChannel
-import io.ktor.network.sockets.openWriteChannel
-import io.ktor.utils.io.readAvailable
-import io.ktor.utils.io.readFully
-import io.ktor.utils.io.readInt
-import io.ktor.utils.io.writeFully
+import io.ktor.network.selector.*
+import io.ktor.network.sockets.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -26,7 +21,7 @@ open class Server {
         }
     }
 
-    fun handleUser (wrapper: Message.ChatMessage) {
+    fun handleUser(wrapper: Message.ChatMessage) {
         println("Received: ${wrapper.name}: ${wrapper.message}")
     }
 

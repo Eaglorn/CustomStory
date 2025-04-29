@@ -1,36 +1,29 @@
 package ru.eaglorn.cs
 
-import io.ktor.network.selector.SelectorManager
-import io.ktor.network.sockets.aSocket
-import io.ktor.network.sockets.openReadChannel
-import io.ktor.network.sockets.openWriteChannel
-import io.ktor.utils.io.readFully
-import io.ktor.utils.io.readInt
-import io.ktor.utils.io.writeFully
+import io.ktor.network.selector.*
+import io.ktor.network.sockets.*
+import io.ktor.utils.io.*
 import javafx.application.Application
-import javafx.stage.Stage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
+import javafx.stage.Stage
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class Client : Application() {
+    @OptIn(DelicateCoroutinesApi::class)
     override fun start(stage: Stage) {
-        runBlocking {
-            launch {
-                try {
-                    val fxmlLoader =
-                        FXMLLoader(Client::class.java.getResource("Application.fxml"))
-                    val scene = Scene(fxmlLoader.load())
-                    stage.title = "CustomStoryClient"
-                    stage.scene = scene
-                    stage.show()
-                } catch (e: Exception) {
-                    println(e.message)
-                }
-                connectToServer()
-            }
+        val fxmlLoader =
+            FXMLLoader(Client::class.java.getResource("Application.fxml"))
+        val scene = Scene(fxmlLoader.load())
+        stage.title = "CustomStoryClient"
+        stage.scene = scene
+        stage.show()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            connectToServer()
         }
     }
 
@@ -87,3 +80,4 @@ class Client : Application() {
 fun main() {
     Application.launch(Client::class.java)
 }
+

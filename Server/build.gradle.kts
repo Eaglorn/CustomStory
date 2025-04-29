@@ -6,6 +6,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
+group = "ru.eaglorn.cs"
+version = "0.0.1"
+
 application {
     mainClass.set("ru.eaglorn.cs.ServerKt")
     applicationName = "CustomStoryServer"
@@ -22,7 +25,7 @@ val springVersion = "3.4.4"
 dependencies {
     implementation(project(":Shared"))
     implementation("org.springframework.boot:spring-boot-starter:$springVersion") {
-        exclude("org.springframework.boot","spring-boot-starter-logging")
+        exclude("org.springframework.boot", "spring-boot-starter-logging")
     }
 }
 
